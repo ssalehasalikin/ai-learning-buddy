@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Learning Buddy</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f9ff;
+      color: #243047;
+    }
+
+    header {
+      background: #00aeb8;
+      color: white;
+      padding: 24px 16px;
+      text-align: center;
+    }
+
+    header h1 { margin: 0 0 8px; }
+    header p { margin: 0; }
+
+    main {
+      max-width: 650px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 14px #17324d12;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 14px 0 8px;
+    }
+
+    select, textarea, button {
+      width: 100%;
+      padding: 12px;
+      font: inherit;
+      border-radius: 10px;
+    }
+
+    select, textarea {
+      border: 1px solid #cbd5e1;
+      background: white;
+    }
+
+    textarea { min-height: 130px; resize: vertical; }
+
+    button {
+      border: 0;
+      background: #00aeb8;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    button.secondary {
+      background: #e0f2fe;
+      color: #075985;
+    }
+
+    button:hover { opacity: 0.88; }
+
+    .story-title {
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    #message {
+      color: #087f5b;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #64748b;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌟 AI Learning Buddy</h1>
+    <p>Belajar, membaca dan meneroka dunia!</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>📚 Jom Baca Cerita!</h2>
+      <p>Pilih bahasa dan dengar cerita bersama-sama.</p>
+
+      <label for="language">Bahasa cerita</label>
+      <select id="language">
+        <option value="ms-MY">Bahasa Melayu</option>
+        <option value="en-GB">British English</option>
+        <option value="ar-SA">Bahasa Arab</option>
+      </select>
+
+      <label for="story">Cerita pilihan kita</label>
+      <select id="story">
+        <option value="rabbit">Arnab yang Baik Hati</option>
+        <option value="space">Pengembaraan ke Angkasa</option>
+      </select>
+
+      <p id="storyTitle" class="story-title"></p>
+      <p id="storyText"></p>
+
+      <button id="readButton" onclick="readStory()">
+        🔊 Baca dengan Suara
+      </button>
+      <button class="secondary" onclick="stopReading()">
+        ⏹ Berhenti Membaca
+      </button>
+      <p id="message" aria-live="polite"></p>
+    </section>
+
+    <section class="card">
+      <h2>💬 Apa yang Kamu Fikirkan?</h2>
+      <p>Selepas membaca, cuba jawab soalan ini:</p>
+      <p id="question">Apakah kebaikan yang boleh kita lakukan untuk orang lain?</p>
+      <label for="answer">Jawapan kamu</label>
+      <textarea id="answer" placeholder="Taip jawapan kamu di sini..."></textarea>
+      <button class="secondary" onclick="checkAnswer()">
+        Semak Jawapan
+      </button>
+      <p id="feedback" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer>AI Learning Buddy · Belajar dengan gembira 💙</footer>
+
+  <script>
+    const stories = {
+      ms: {
+        rabbit: {
+          title: "Arnab yang Baik Hati",
+          text: "Pada suatu pagi, seekor arnab bernama Mimi berjalan di dalam hutan. Mimi ternampak seekor burung kecil yang tidak dapat pulang ke sarangnya. Mimi membantu burung itu mencari jalan pulang. Burung itu berasa sangat gembira. Mimi belajar bahawa membantu orang lain boleh membuat semua orang bahagia."
+        },
+        space: {
+          title: "Pengembaraan ke Angkasa",
+          text: "Aina menaiki roket kecil menuju ke angkasa. Dia melihat Bulan, bintang dan planet yang berwarna-warni. Di sana, Aina belajar bahawa Bumi ialah tempat tinggal kita. Dia berjanji akan menjaga Bumi supaya sentiasa bersih dan indah."
+        }
+      },
+      en: {
+        rabbit: {
+          title: "The Kind Rabbit",
+          text: "One morning, a rabbit named Mimi walked through the forest. She found a little bird that could not find its nest. Mimi helped the bird find its way home. The bird was very happy. Mimi learnt that helping others can make everyone feel happy."
+        },
+        space: {
+          title: "A Space Adventure",
+          text: "Aina travelled into space in a little rocket. She saw the Moon, stars and colourful planets. She learnt that Earth is our home. She promised to help keep our planet clean and beautiful."
+        }
+      },
+      ar: {
+        rabbit: {
+          title: "الأرنب الطيب",
+          text: "في صباح جميل، مشى أرنب اسمه ميمي في الغابة. وجد عصفورًا صغيرًا لا يستطيع العودة إلى عشه. ساعده ميمي حتى عاد إلى بيته. فرح العصفور كثيرًا. تعلم ميمي أن مساعدة الآخرين تجعل الجميع سعداء."
+        },
+        space: {
+          title: "رحلة إلى الفضاء",
+          text: "سافرت آمنة إلى الفضاء في صاروخ صغير. رأت القمر والنجوم والكواكب الملونة. تعلمت أن الأرض هي بيتنا. ووعدت أن تحافظ على نظافة الأرض وجمالها."
+        }
+      }
+    };
+
+    function getStory() {
+      const language = document.getElementById("language").value;
+      const group = language.startsWith("en") ? "en"
+                  : language.startsWith("ar") ? "ar" : "ms";
+      return stories[group][document.getElementById("story").value];
+    }
+
+    function updateStory() {
+      const story = getStory();
+      document.getElementById("storyTitle").textContent = story.title;
+      document.getElementById("storyText").textContent = story.text;
+      document.getElementById("message").textContent = "";
+      document.getElementById("feedback").textContent = "";
+    }
+
+    function readStory() {
+      if (!("speechSynthesis" in window)) {
+        document.getElementById("message").textContent =
+          "Maaf, fungsi suara tidak disokong oleh pelayar ini.";
+        return;
+      }
+
+      stopReading();
+      const text = getStory().title + ". " + getStory().text;
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = document.getElementById("language").value;
+      speech.rate = 0.85;
+
+      speech.onstart = () => {
+        document.getElementById("message").textContent =
+          "Sedang membaca cerita...";
+      };
+      speech.onend = () => {
+        document.getElementById("message").textContent =
+          "Cerita selesai! Bagus kerana mendengar.";
+      };
+      speech.onerror = () => {
+        document.getElementById("message").textContent =
+          "Suara tidak tersedia. Cuba pelayar atau peranti lain.";
+      };
+
+      window.speechSynthesis.speak(speech);
+    }
+
+    function stopReading() {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      document.getElementById("message").textContent = "";
+    }
+
+    function checkAnswer() {
+      const answer = document.getElementById("answer").value.trim();
+      document.getElementById("feedback").textContent = answer
+        ? "🌟 Terima kasih mencuba! Fikirkan bagaimana kita boleh membantu orang lain. Ini prototaip awal; semakan AI sebenar akan ditambah kemudian."
+        : "Cuba tulis jawapan kamu dahulu. Kamu pasti boleh!";
+    }
+
+    document.getElementById("language").addEventListener("change", updateStory);
+    document.getElementById("story").addEventListener("change", updateStory);
+
+    updateStory();
+  </script>
+</body>
+</html>
