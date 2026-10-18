@@ -2,245 +2,471 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Learning Buddy</title>
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f0f9ff;
-      color: #243047;
-    }
-
-    header {
-      background: #00aeb8;
-      color: white;
-      padding: 24px 16px;
-      text-align: center;
-    }
-
-    header h1 { margin: 0 0 8px; }
-    header p { margin: 0; }
-
-    main {
-      max-width: 650px;
-      margin: 24px auto;
-      padding: 0 16px;
-    }
-
-    .card {
-      background: white;
-      padding: 22px;
-      border-radius: 20px;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 14px #17324d12;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin: 14px 0 8px;
-    }
-
-    select, textarea, button {
-      width: 100%;
-      padding: 12px;
-      font: inherit;
-      border-radius: 10px;
-    }
-
-    select, textarea {
-      border: 1px solid #cbd5e1;
-      background: white;
-    }
-
-    textarea { min-height: 130px; resize: vertical; }
-
-    button {
-      border: 0;
-      background: #00aeb8;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-
-    button.secondary {
-      background: #e0f2fe;
-      color: #075985;
-    }
-
-    button:hover { opacity: 0.88; }
-
-    .story-title {
-      font-size: 21px;
-      font-weight: bold;
-    }
-
-    #message {
-      color: #087f5b;
-      font-size: 14px;
-      min-height: 20px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #64748b;
-      font-size: 13px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Learning Buddy - Kisah Islam</title>
+<style>
+:root {
+  --blue: #00aeb8;
+  --dark: #173b4a;
+  --cream: #fffaf0;
+  --gold: #f4bd55;
+  --white: #ffffff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f0f9fa;
+  color: #263746;
+  line-height: 1.75;
+}
+header {
+  background: linear-gradient(135deg,#087f8c,#00b8b2);
+  color: white;
+  text-align: center;
+  padding: 30px 16px;
+}
+header h1 { margin: 0; font-size: clamp(25px,5vw,38px); }
+header p { margin: 8px 0 0; }
+main { max-width: 900px; margin: auto; padding: 20px 14px 45px; }
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 16px #173b4a0c;
+}
+h2,h3 { color: var(--dark); line-height: 1.4; }
+label { display: block; font-weight: bold; margin: 12px 0 5px; }
+select,button {
+  font: inherit;
+  padding: 11px 14px;
+  border-radius: 10px;
+}
+select { width: 100%; border: 1px solid #cbd5e1; background: white; }
+button {
+  border: none;
+  cursor: pointer;
+  background: var(--blue);
+  color: white;
+  font-weight: bold;
+  margin: 5px 5px 5px 0;
+}
+button:hover { filter: brightness(.95); }
+button:focus-visible,select:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+button.secondary { background: #e4f5f6; color: #075966; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+.story-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 12px; }
+.story-option {
+  border: 2px solid #e0eff0;
+  border-radius: 14px;
+  padding: 15px;
+  cursor: pointer;
+  background: #fff;
+}
+.story-option.active { border-color: var(--blue); background: #edffff; }
+.story-option h3 { margin: 4px 0 8px; }
+.story-option p { margin: 0; font-size: 14px; }
+.emoji { font-size: 30px; }
+.chapter-text { white-space: pre-line; font-size: 17px; }
+.chapter-label { color: #087f8c; font-weight: bold; }
+.progress { height: 8px; background: #e1eded; border-radius: 20px; overflow: hidden; }
+.progress div { height: 100%; background: var(--blue); width: 0; transition: width .2s; }
+.quiz-option {
+  display: block; width: 100%; text-align: left;
+  margin: 8px 0; background: #eef8f9; color: #173b4a;
+  border: 1px solid #d5e9ea;
+}
+.quiz-option.correct { background: #e1f7e8; border-color: #61ad78; }
+.quiz-option.wrong { background: #fff0ed; border-color: #dc8e7d; }
+.note { font-size: 13px; color: #61717b; }
+.hidden { display: none; }
+footer { text-align: center; padding: 20px; color: #61717b; font-size: 13px; }
+[dir="rtl"] { text-align: right; }
+@media(max-width:500px) {
+  main { padding: 12px 9px 30px; }
+  .card { padding: 15px; }
+  .chapter-text { font-size: 16px; }
+  button { margin-bottom: 8px; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>🌟 AI Learning Buddy</h1>
-    <p>Belajar, membaca dan meneroka dunia!</p>
-  </header>
+<header>
+  <div style="font-size:38px">🌙 📚 ⭐</div>
+  <h1>AI Learning Buddy</h1>
+  <p>Kisah Rasulullah SAW & Para Sahabat</p>
+  <p>Belajar akhlak mulia melalui kisah yang bermakna</p>
+</header>
 
-  <main>
-    <section class="card">
-      <h2>📚 Jom Baca Cerita!</h2>
-      <p>Pilih bahasa dan dengar cerita bersama-sama.</p>
+<main>
+<section class="card">
+  <h2>Assalamualaikum, adik! 👋</h2>
+  <p>Jom kita mengenali Rasulullah SAW dan para sahabat melalui kisah sejarah Islam. Baca, dengar dan jawab soalan untuk menguji kefahaman kamu.</p>
+  <label for="language">Bahasa bacaan</label>
+  <select id="language">
+    <option value="ms-MY">Bahasa Melayu</option>
+    <option value="en-GB">British English (cerita BM masih tersedia sahaja)</option>
+    <option value="ar-SA">Bahasa Arab (cerita BM masih tersedia sahaja)</option>
+  </select>
+  <p class="note">Pilihan bahasa menentukan bahasa suara jika suara tersebut tersedia pada peranti. Terjemahan penuh akan ditambah kemudian.</p>
+</section>
 
-      <label for="language">Bahasa cerita</label>
-      <select id="language">
-        <option value="ms-MY">Bahasa Melayu</option>
-        <option value="en-GB">British English</option>
-        <option value="ar-SA">Bahasa Arab</option>
-      </select>
+<section class="card">
+  <h2>📖 Pilih kisah</h2>
+  <div class="story-list" id="storyList"></div>
+</section>
 
-      <label for="story">Cerita pilihan kita</label>
-      <select id="story">
-        <option value="rabbit">Arnab yang Baik Hati</option>
-        <option value="space">Pengembaraan ke Angkasa</option>
-      </select>
+<section class="card" id="reader">
+  <div class="chapter-label" id="chapterNumber"></div>
+  <h2 id="chapterTitle">Pilih cerita untuk bermula</h2>
+  <div class="progress"><div id="progressBar"></div></div>
+  <p class="chapter-text" id="chapterText">Cerita pilihan kamu akan dipaparkan di sini.</p>
+  <div>
+    <button id="readBtn">🔊 Dengar cerita</button>
+    <button class="secondary" id="stopBtn">⏹ Berhenti</button>
+  </div>
+  <div style="margin-top:12px">
+    <button class="secondary" id="prevBtn">← Bab sebelumnya</button>
+    <button id="nextBtn">Bab seterusnya →</button>
+  </div>
+  <p class="note" id="storyNote"></p>
+</section>
 
-      <p id="storyTitle" class="story-title"></p>
-      <p id="storyText"></p>
+<section class="card hidden" id="quiz">
+  <h2>🧠 Uji kefahaman kamu!</h2>
+  <p id="quizQuestion"></p>
+  <div id="quizOptions"></div>
+  <p id="quizFeedback" aria-live="polite"></p>
+  <p id="quizScore"></p>
+  <button id="nextQuestionBtn" class="hidden">Soalan seterusnya</button>
+  <button id="restartQuizBtn" class="secondary hidden">Cuba kuiz sekali lagi</button>
+</section>
 
-      <button id="readButton" onclick="readStory()">
-        🔊 Baca dengan Suara
-      </button>
-      <button class="secondary" onclick="stopReading()">
-        ⏹ Berhenti Membaca
-      </button>
-      <p id="message" aria-live="polite"></p>
-    </section>
+<section class="card">
+  <h2>💚 Apa yang kita pelajari?</h2>
+  <p id="lessonText">Setiap kisah mempunyai pengajaran yang boleh diamalkan dalam kehidupan seharian.</p>
+  <p><strong>Cabaran adik hari ini:</strong> Pilih satu akhlak baik daripada cerita dan cuba amalkannya bersama keluarga.</p>
+</section>
 
-    <section class="card">
-      <h2>💬 Apa yang Kamu Fikirkan?</h2>
-      <p>Selepas membaca, cuba jawab soalan ini:</p>
-      <p id="question">Apakah kebaikan yang boleh kita lakukan untuk orang lain?</p>
-      <label for="answer">Jawapan kamu</label>
-      <textarea id="answer" placeholder="Taip jawapan kamu di sini..."></textarea>
-      <button class="secondary" onclick="checkAnswer()">
-        Semak Jawapan
-      </button>
-      <p id="feedback" aria-live="polite"></p>
-    </section>
-  </main>
+<section class="card">
+  <h2>👨‍👩‍👧 Ruang ibu bapa</h2>
+  <p>Selepas membaca, ibu bapa boleh bertanya kepada anak tentang bahagian yang paling menarik dan bagaimana pengajaran cerita boleh diamalkan.</p>
+  <p class="note">Versi ini belum menyimpan kemajuan secara automatik dan belum mempunyai AI perbualan. Cerita yang dipaparkan ialah kandungan tetap yang disediakan dalam aplikasi.</p>
+</section>
+</main>
 
-  <footer>AI Learning Buddy · Belajar dengan gembira 💙</footer>
+<footer>AI Learning Buddy · Belajar dengan ilmu, akhlak dan kasih sayang.</footer>
 
-  <script>
-    const stories = {
-      ms: {
-        rabbit: {
-          title: "Arnab yang Baik Hati",
-          text: "Pada suatu pagi, seekor arnab bernama Mimi berjalan di dalam hutan. Mimi ternampak seekor burung kecil yang tidak dapat pulang ke sarangnya. Mimi membantu burung itu mencari jalan pulang. Burung itu berasa sangat gembira. Mimi belajar bahawa membantu orang lain boleh membuat semua orang bahagia."
-        },
-        space: {
-          title: "Pengembaraan ke Angkasa",
-          text: "Aina menaiki roket kecil menuju ke angkasa. Dia melihat Bulan, bintang dan planet yang berwarna-warni. Di sana, Aina belajar bahawa Bumi ialah tempat tinggal kita. Dia berjanji akan menjaga Bumi supaya sentiasa bersih dan indah."
-        }
-      },
-      en: {
-        rabbit: {
-          title: "The Kind Rabbit",
-          text: "One morning, a rabbit named Mimi walked through the forest. She found a little bird that could not find its nest. Mimi helped the bird find its way home. The bird was very happy. Mimi learnt that helping others can make everyone feel happy."
-        },
-        space: {
-          title: "A Space Adventure",
-          text: "Aina travelled into space in a little rocket. She saw the Moon, stars and colourful planets. She learnt that Earth is our home. She promised to help keep our planet clean and beautiful."
-        }
-      },
-      ar: {
-        rabbit: {
-          title: "الأرنب الطيب",
-          text: "في صباح جميل، مشى أرنب اسمه ميمي في الغابة. وجد عصفورًا صغيرًا لا يستطيع العودة إلى عشه. ساعده ميمي حتى عاد إلى بيته. فرح العصفور كثيرًا. تعلم ميمي أن مساعدة الآخرين تجعل الجميع سعداء."
-        },
-        space: {
-          title: "رحلة إلى الفضاء",
-          text: "سافرت آمنة إلى الفضاء في صاروخ صغير. رأت القمر والنجوم والكواكب الملونة. تعلمت أن الأرض هي بيتنا. ووعدت أن تحافظ على نظافة الأرض وجمالها."
-        }
-      }
-    };
+<script>
+const stories = [
+{
+ id:"umar",
+ icon:"🌟",
+ title:"Umar bin al-Khattab RA",
+ desc:"Perjalanan daripada penentangan kepada keimanan.",
+ note:"Kisah memeluk Islam ini berdasarkan riwayat sirah yang masyhur. Sebahagian perincian mempunyai perbezaan dari segi kekuatan riwayat.",
+ lesson:"Berani mencari kebenaran, mengakui kesilapan dan menggunakan kekuatan untuk kebaikan.",
+ chapters:[
+ {title:"Makkah dan seorang lelaki yang tegas",text:`Pada zaman Rasulullah Muhammad SAW, kota Makkah menjadi tempat tinggal masyarakat Arab dan tempat Kaabah berada. Di kota inilah Umar bin al-Khattab RA membesar.
 
-    function getStory() {
-      const language = document.getElementById("language").value;
-      const group = language.startsWith("en") ? "en"
-                  : language.startsWith("ar") ? "ar" : "ms";
-      return stories[group][document.getElementById("story").value];
-    }
+Umar terkenal dengan keberanian, ketegasan dan kekuatan peribadinya. Beliau mempunyai pengaruh dalam masyarakat Quraisy.
 
-    function updateStory() {
-      const story = getStory();
-      document.getElementById("storyTitle").textContent = story.title;
-      document.getElementById("storyText").textContent = story.text;
-      document.getElementById("message").textContent = "";
-      document.getElementById("feedback").textContent = "";
-    }
+Apabila Rasulullah SAW menyampaikan ajaran Islam, Baginda mengajak manusia menyembah Allah Yang Maha Esa, meninggalkan penyembahan berhala dan mengamalkan akhlak yang baik.
 
-    function readStory() {
-      if (!("speechSynthesis" in window)) {
-        document.getElementById("message").textContent =
-          "Maaf, fungsi suara tidak disokong oleh pelayar ini.";
-        return;
-      }
+Namun, sebahagian masyarakat Quraisy menentang dakwah tersebut. Umar juga belum menerima Islam dan pada ketika itu menentang dakwah Rasulullah SAW.
 
+Kehidupan Umar kemudiannya berubah dengan perubahan yang besar. Beliau akhirnya menjadi seorang sahabat Rasulullah SAW yang penting dalam sejarah Islam.
+
+Kisah ini mengingatkan kita bahawa keadaan seseorang pada hari ini tidak semestinya menentukan seluruh kehidupannya pada masa hadapan.`},
+ {title:"Berita tentang adiknya",text:`Dalam riwayat sirah yang masyhur, Umar mendapat tahu bahawa adik perempuannya, Fatimah binti al-Khattab, dan suaminya, Sa'id bin Zaid RA, telah memeluk Islam.
+
+Berita itu menimbulkan kemarahan Umar. Beliau kemudian pergi ke tempat adik dan iparnya berada.
+
+Pada waktu itu, Fatimah dan Sa'id sedang mempelajari ayat-ayat al-Quran bersama Khabbab bin al-Aratt RA.
+
+Apabila Umar tiba, suasana menjadi tegang. Riwayat sirah tersebut menyebut bahawa berlaku pertengkaran dan Fatimah mengalami kecederaan.
+
+Walaupun begitu, Fatimah tetap menyatakan bahawa dirinya dan suaminya telah memeluk Islam. Kejadian itu menjadi titik penting dalam perjalanan Umar menuju kepada perubahan.
+
+Kita perlu memahami bahawa perbuatan menyakiti orang lain bukan akhlak yang patut dicontohi. Kisah ini menunjukkan betapa bahayanya kemarahan apabila seseorang gagal mengawalnya.`},
+ {title:"Ayat al-Quran yang dibacanya",text:`Menurut riwayat sirah yang masyhur, Umar kemudian meminta untuk melihat lembaran yang mengandungi ayat al-Quran.
+
+Beliau membaca ayat-ayat daripada Surah Taha. Surah ini mengandungi peringatan tentang wahyu Allah dan tujuan manusia menyembah-Nya.
+
+Allah berfirman dalam Surah Taha ayat 2 bahawa al-Quran tidak diturunkan kepada Nabi Muhammad SAW untuk menyusahkan Baginda.
+
+Membaca al-Quran menjadi sebahagian daripada peristiwa yang sering diceritakan dalam kisah Umar memeluk Islam.
+
+Kita tidak perlu mereka-reka kata-kata atau perasaan Umar untuk memahami pengajaran peristiwa ini. Perkara yang penting ialah beliau mula mencari jalan untuk menemui Rasulullah SAW.
+
+Pengajarannya: kita hendaklah mendengar, membaca dan memahami sesuatu dengan hati yang terbuka sebelum membuat keputusan.`},
+ {title:"Menuju ke rumah al-Arqam",text:`Selepas peristiwa tersebut, Umar mencari Rasulullah SAW. Menurut riwayat sirah yang masyhur, Khabbab bin al-Aratt RA memberitahunya bahawa Rasulullah SAW berada di rumah al-Arqam bin Abi al-Arqam.
+
+Rumah itu digunakan sebagai tempat umat Islam berkumpul dan mempelajari agama ketika mereka menghadapi tentangan di Makkah.
+
+Para sahabat berasa bimbang apabila mengetahui Umar datang, kerana beliau sebelum itu menentang Islam.
+
+Hamzah bin Abdul Muttalib RA, bapa saudara Rasulullah SAW yang juga terkenal dengan keberaniannya, telah pun memeluk Islam.
+
+Umar akhirnya bertemu Rasulullah SAW. Pertemuan itu menjadi bahagian penting dalam kisah beliau menerima Islam.
+
+Peristiwa ini mengingatkan kita supaya tidak berputus asa daripada mengharapkan kebaikan dan petunjuk Allah.`},
+ {title:"Menerima Islam",text:`Dalam riwayat sirah yang masyhur, Umar menyatakan keinginannya untuk menerima Islam dan mengucapkan dua kalimah syahadah di hadapan Rasulullah SAW.
+
+Perubahan itu menjadi titik penting dalam kehidupannya. Umar yang sebelumnya menentang dakwah kini menjadi seorang Muslim dan kemudian terkenal sebagai salah seorang sahabat Rasulullah SAW.
+
+Kisah ini biasanya diletakkan sekitar tahun keenam kenabian, walaupun terdapat perbezaan dalam perincian sesetengah riwayat.
+
+Kita tidak perlu menambah dialog yang tidak dapat dipastikan atau menggambarkan peristiwa itu seolah-olah kita mengetahui setiap perkara yang berlaku.
+
+Yang jelas, Umar akhirnya menerima Islam dan memainkan peranan besar dalam sejarah umat Islam.
+
+Pengajarannya: apabila mengetahui kebenaran, kita hendaklah berani menerimanya dan memperbaiki diri.`},
+ {title:"Daripada sahabat kepada khalifah",text:`Selepas memeluk Islam, Umar menjadi salah seorang sahabat yang penting dalam masyarakat Islam.
+
+Selepas kewafatan Rasulullah SAW, Abu Bakar as-Siddiq RA menjadi khalifah pertama. Umar kemudiannya menjadi khalifah kedua.
+
+Umar dikenang dalam sejarah Islam kerana ketegasan, pentadbiran dan perhatian terhadap keadilan serta kebajikan masyarakat.
+
+Perjalanan hidupnya menunjukkan bahawa kekuatan dan keberanian perlu digunakan untuk perkara yang benar, bukan untuk menyakiti orang lain.
+
+Kita juga belajar bahawa perubahan memerlukan kesediaan untuk meninggalkan kesilapan lalu dan berusaha melakukan perkara yang baik.
+
+Adik boleh mencontohi keberanian Umar dalam mencari kebenaran, sambil sentiasa mengamalkan kelembutan, keadilan dan hormat kepada orang lain.`}
+ ],
+ quiz:[
+ {q:"Siapakah adik perempuan Umar?",a:["Fatimah binti al-Khattab","Aisyah binti Abu Bakar","Hafsah binti Umar"],correct:0,why:"Fatimah binti al-Khattab ialah adik perempuan Umar."},
+ {q:"Surah apakah yang disebut dalam riwayat sirah berkaitan peristiwa ini?",a:["Surah al-Fil","Surah Taha","Surah al-Kawthar"],correct:1,why:"Riwayat sirah yang masyhur menyebut ayat-ayat daripada Surah Taha."},
+ {q:"Siapakah khalifah kedua selepas Abu Bakar RA?",a:["Umar bin al-Khattab RA","Bilal bin Rabah RA","Khalid bin al-Walid RA"],correct:0,why:"Umar bin al-Khattab RA menjadi khalifah kedua."}
+ ]
+},
+{
+ id:"abu-bakar",
+ icon:"🤝",
+ title:"Abu Bakar as-Siddiq RA",
+ desc:"Kejujuran dan kesetiaan kepada Rasulullah SAW.",
+ note:"Kisah ini merumuskan peristiwa yang diketahui dalam sejarah Islam.",
+ lesson:"Bercakap benar, menyokong kebenaran dan menjadi sahabat yang setia.",
+ chapters:[
+ {title:"Sahabat yang dikenali dengan kejujuran",text:`Abu Bakar as-Siddiq RA ialah sahabat rapat Rasulullah SAW. Sebelum dan selepas menerima Islam, beliau dikenali sebagai seorang yang dihormati dalam masyarakatnya.
+
+Apabila Rasulullah SAW menyampaikan wahyu dan mengajak manusia menyembah Allah Yang Maha Esa, Abu Bakar menerima Islam dan menjadi antara orang terawal yang memeluk Islam.
+
+Beliau menggunakan kedudukan, harta dan pengaruhnya untuk membantu dakwah Islam.
+
+Gelaran as-Siddiq dikaitkan dengan sifat membenarkan Rasulullah SAW, termasuk dalam kisah perjalanan Isra' dan Mikraj yang terkenal dalam sirah.
+
+Kehidupan Abu Bakar mengajar kita bahawa kejujuran bukan hanya tentang berkata benar, tetapi juga tentang berpegang pada kebenaran.`},
+ {title:"Persahabatan ketika hijrah",text:`Apabila umat Islam berhijrah dari Makkah ke Madinah, Abu Bakar RA menjadi teman perjalanan Rasulullah SAW.
+
+Al-Quran menyebut peristiwa dua orang yang berada di dalam gua dalam Surah al-Tawbah, ayat 40. Ayat tersebut mengingatkan orang beriman supaya tidak berdukacita kerana Allah bersama mereka dengan pertolongan-Nya.
+
+Peristiwa hijrah menjadi salah satu peristiwa penting dalam sejarah Islam. Ia menunjukkan kesungguhan Rasulullah SAW dan para sahabat dalam menempuh perjalanan yang mencabar.
+
+Persahabatan Abu Bakar dengan Rasulullah SAW menjadi teladan tentang kesetiaan, pengorbanan dan kepercayaan.
+
+Kita boleh mengamalkan nilai ini dengan membantu keluarga dan rakan melakukan perkara yang baik.`}
+ ],
+ quiz:[
+ {q:"Apakah sifat yang terkenal pada Abu Bakar RA?",a:["Kejujuran","Suka menipu","Sombong"],correct:0,why:"Abu Bakar RA dikenali dengan kejujuran dan kesetiaannya."},
+ {q:"Siapakah teman Rasulullah SAW ketika hijrah?",a:["Abu Bakar RA","Abu Lahab","Fir'aun"],correct:0,why:"Abu Bakar RA menemani Rasulullah SAW ketika hijrah."}
+ ]
+},
+{
+ id:"rasulullah",
+ icon:"💚",
+ title:"Akhlak Rasulullah SAW",
+ desc:"Kasih sayang, kelembutan dan berbuat baik.",
+ note:"Kisah akhlak disusun berdasarkan prinsip yang disebut dalam al-Quran dan hadis; butiran cerita tidak ditambah tanpa asas.",
+ lesson:"Bercakap dengan baik, menyayangi makhluk dan melayan orang lain dengan hormat.",
+ chapters:[
+ {title:"Rasulullah SAW sebagai teladan",text:`Rasulullah Muhammad SAW diutus sebagai rasul untuk menyampaikan wahyu Allah dan membimbing manusia.
+
+Al-Quran menyebut dalam Surah al-Qalam ayat 4 bahawa Baginda mempunyai akhlak yang agung.
+
+Akhlak yang baik dapat dilihat melalui kejujuran, amanah, kesabaran dan cara seseorang melayan orang lain.
+
+Rasulullah SAW mengajar umatnya supaya bercakap dengan baik, menunaikan amanah dan tidak menzalimi orang lain.
+
+Baginda juga mengajar bahawa kebaikan bukan hanya ditunjukkan kepada orang yang kita kenali. Kita hendaklah melayan orang lain dengan adil dan berbuat baik kepada makhluk Allah.
+
+Anak-anak boleh mencontohi akhlak ini di rumah, di sekolah dan ketika bermain dengan rakan.`},
+ {title:"Kelembutan dalam kehidupan",text:`Rasulullah SAW terkenal dengan sifat rahmat dan kelembutan. Allah berfirman dalam Surah Ali 'Imran ayat 159 tentang rahmat Allah yang menjadikan Baginda bersikap lemah lembut terhadap orang di sekelilingnya.
+
+Kelembutan tidak bermaksud membiarkan perkara salah berlaku. Sebaliknya, kita boleh menegur dengan cara yang baik sambil menjaga maruah orang lain.
+
+Apabila berlaku perselisihan, anak-anak boleh belajar untuk bertenang, mendengar penjelasan dan bercakap dengan sopan.
+
+Kita juga boleh menunjukkan kasih sayang melalui perbuatan mudah: membantu ibu bapa, menjaga kebersihan, tidak mengejek rakan dan memberi makan kepada haiwan dengan cara yang selamat.
+
+Inilah antara cara membawa pengajaran akhlak Islam ke dalam kehidupan seharian.`}
+ ],
+ quiz:[
+ {q:"Bagaimanakah al-Quran menggambarkan akhlak Rasulullah SAW?",a:["Akhlak yang agung","Suka berbohong","Tidak amanah"],correct:0,why:"Surah al-Qalam ayat 4 menyebut bahawa Baginda mempunyai akhlak yang agung."},
+ {q:"Bagaimanakah kita patut menegur rakan?",a:["Dengan mengejeknya","Dengan sopan dan baik","Dengan memukulnya"],correct:1,why:"Kita hendaklah menegur dengan sopan dan menjaga maruah orang lain."}
+ ]
+}
+];
+
+let selectedStory = stories[0];
+let chapterIndex = 0;
+let quizIndex = 0;
+let score = 0;
+let answered = false;
+
+const $ = id => document.getElementById(id);
+
+function renderStoryList() {
+  $("storyList").innerHTML = "";
+  stories.forEach(story => {
+    const card = document.createElement("div");
+    card.className = "story-option" + (story.id === selectedStory.id ? " active" : "");
+    const icon = document.createElement("div");
+    icon.className = "emoji";
+    icon.textContent = story.icon;
+    const title = document.createElement("h3");
+    title.textContent = story.title;
+    const desc = document.createElement("p");
+    desc.textContent = story.desc;
+    card.append(icon,title,desc);
+    card.addEventListener("click", () => {
       stopReading();
-      const text = getStory().title + ". " + getStory().text;
-      const speech = new SpeechSynthesisUtterance(text);
-      speech.lang = document.getElementById("language").value;
-      speech.rate = 0.85;
+      selectedStory = story;
+      chapterIndex = 0;
+      $("quiz").classList.add("hidden");
+      renderStoryList();
+      renderChapter();
+      $("lessonText").textContent = story.lesson;
+    });
+    $("storyList").appendChild(card);
+  });
+}
 
-      speech.onstart = () => {
-        document.getElementById("message").textContent =
-          "Sedang membaca cerita...";
-      };
-      speech.onend = () => {
-        document.getElementById("message").textContent =
-          "Cerita selesai! Bagus kerana mendengar.";
-      };
-      speech.onerror = () => {
-        document.getElementById("message").textContent =
-          "Suara tidak tersedia. Cuba pelayar atau peranti lain.";
-      };
+function renderChapter() {
+  const chapters = selectedStory.chapters;
+  const chapter = chapters[chapterIndex];
+  $("chapterNumber").textContent =
+    "BAB " + (chapterIndex + 1) + " DARIPADA " + chapters.length;
+  $("chapterTitle").textContent = chapter.title;
+  $("chapterText").textContent = chapter.text;
+  $("storyNote").textContent = selectedStory.note;
+  $("progressBar").style.width = ((chapterIndex + 1) / chapters.length * 100) + "%";
+  $("prevBtn").disabled = chapterIndex === 0;
+  $("nextBtn").textContent = chapterIndex === chapters.length - 1
+    ? "Mula kuiz →" : "Bab seterusnya →";
+  $("lessonText").textContent = selectedStory.lesson;
+  $("quiz").classList.add("hidden");
+  window.scrollTo({top: $("reader").offsetTop - 10, behavior:"smooth"});
+}
 
-      window.speechSynthesis.speak(speech);
-    }
+function stopReading() {
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+}
 
-    function stopReading() {
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
+$("readBtn").addEventListener("click", () => {
+  if (!("speechSynthesis" in window)) {
+    alert("Maaf, pelayar ini tidak menyokong bacaan suara.");
+    return;
+  }
+  stopReading();
+  const lang = $("language").value;
+  const utterance = new SpeechSynthesisUtterance(
+    selectedStory.chapters[chapterIndex].title + ". " +
+    selectedStory.chapters[chapterIndex].text
+  );
+  utterance.lang = lang;
+  utterance.rate = 0.85;
+  const voices = speechSynthesis.getVoices();
+  const prefix = lang.split("-")[0];
+  const voice = voices.find(v => v.lang.toLowerCase().startsWith(prefix));
+  if (voice) utterance.voice = voice;
+  utterance.onerror = () => alert("Suara tidak tersedia. Cuba suara lain pada peranti.");
+  speechSynthesis.speak(utterance);
+});
+$("stopBtn").addEventListener("click", stopReading);
+$("prevBtn").addEventListener("click", () => {
+  if (chapterIndex > 0) {
+    stopReading();
+    chapterIndex--;
+    renderChapter();
+  }
+});
+$("nextBtn").addEventListener("click", () => {
+  stopReading();
+  if (chapterIndex < selectedStory.chapters.length - 1) {
+    chapterIndex++;
+    renderChapter();
+  } else {
+    startQuiz();
+  }
+});
+
+function startQuiz() {
+  quizIndex = 0;
+  score = 0;
+  $("quiz").classList.remove("hidden");
+  renderQuestion();
+  $("quiz").scrollIntoView({behavior:"smooth"});
+}
+
+function renderQuestion() {
+  answered = false;
+  const questions = selectedStory.quiz;
+  if (quizIndex >= questions.length) {
+    $("quizQuestion").textContent = "Tahniah! Kuiz selesai. 🌟";
+    $("quizOptions").innerHTML = "";
+    $("quizFeedback").textContent = "Markah kamu: " + score + " daripada " + questions.length + ". " +
+      (score === questions.length ? "Hebat, semua jawapan betul!" : "Bagus kerana mencuba! Kamu boleh baca semula dan cuba lagi.");
+    $("quizScore").textContent = "";
+    $("nextQuestionBtn").classList.add("hidden");
+    $("restartQuizBtn").classList.remove("hidden");
+    return;
+  }
+  const q = questions[quizIndex];
+  $("quizQuestion").textContent = "Soalan " + (quizIndex + 1) + ": " + q.q;
+  $("quizOptions").innerHTML = "";
+  $("quizFeedback").textContent = "";
+  $("quizScore").textContent = "";
+  $("nextQuestionBtn").classList.add("hidden");
+  $("restartQuizBtn").classList.add("hidden");
+
+  q.a.forEach((answer, index) => {
+    const button = document.createElement("button");
+    button.className = "quiz-option";
+    button.textContent = String.fromCharCode(65 + index) + ". " + answer;
+    button.addEventListener("click", () => {
+      if (answered) return;
+      answered = true;
+      if (index === q.correct) {
+        score++;
+        button.classList.add("correct");
+        $("quizFeedback").textContent = "Betul! 🌟 " + q.why;
+      } else {
+        button.classList.add("wrong");
+        $("quizFeedback").textContent = "Belum tepat. Jawapan yang betul ialah " +
+          q.a[q.correct] + ". " + q.why;
       }
-      document.getElementById("message").textContent = "";
-    }
+      $("quizScore").textContent = "Markah setakat ini: " + score;
+      $("nextQuestionBtn").classList.remove("hidden");
+      $("quizOptions").querySelectorAll("button").forEach(b => b.disabled = true);
+    });
+    $("quizOptions").appendChild(button);
+  });
+}
 
-    function checkAnswer() {
-      const answer = document.getElementById("answer").value.trim();
-      document.getElementById("feedback").textContent = answer
-        ? "🌟 Terima kasih mencuba! Fikirkan bagaimana kita boleh membantu orang lain. Ini prototaip awal; semakan AI sebenar akan ditambah kemudian."
-        : "Cuba tulis jawapan kamu dahulu. Kamu pasti boleh!";
-    }
+$("nextQuestionBtn").addEventListener("click", () => {
+  quizIndex++;
+  renderQuestion();
+});
+$("restartQuizBtn").addEventListener("click", startQuiz);
 
-    document.getElementById("language").addEventListener("change", updateStory);
-    document.getElementById("story").addEventListener("change", updateStory);
-
-    updateStory();
-  </script>
+renderStoryList();
+renderChapter();
+</script>
 </body>
 </html>
